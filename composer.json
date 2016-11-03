@@ -1,0 +1,23 @@
+{
+  "name": "basebuilder/scheduling",
+  "description": "CRON like behaviour with PHP. You can replace many cron jobs with a single entry when using this",
+  "authors": [
+    {
+      "name": "Basebuilder development team",
+      "email": "development@basebuilder.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Basebuilder\\Scheduling\\": "src/"
+    }
+  },
+  "require": {
+    "nesbot/carbon"             : "1.21.*",
+    "mtdowling/cron-expression" : "1.1.*",
+    "symfony/process"           : "3.1.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.5"
+  }
+}
