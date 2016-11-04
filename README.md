@@ -1,6 +1,13 @@
 # basebuilder/scheduling
 basebuilder/scheduling can be used for easily performing cron jobs in PHP.
 
+[![Latest Stable Version](https://poser.pugx.org/basebuilder/scheduling/v/stable)](https://packagist.org/packages/basebuilder/scheduling)
+[![Total Downloads](https://poser.pugx.org/basebuilder/scheduling/downloads)](https://packagist.org/packages/basebuilder/scheduling)
+[![License](https://poser.pugx.org/basebuilder/scheduling/license)](https://packagist.org/packages/basebuilder/scheduling)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/clansman-nl/scheduling/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/clansman-nl/scheduling/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/clansman-nl/scheduling/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/clansman-nl/scheduling/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/clansman-nl/scheduling/badges/build.png?b=master)](https://scrutinizer-ci.com/g/clansman-nl/scheduling/build-status/master)
+
 ## Examples
 Let's say you create `/var/php/cron.php` with the following contents:
 
