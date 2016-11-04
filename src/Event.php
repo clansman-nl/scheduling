@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Closure;
 use Cron\CronExpression;
 use Symfony\Component\Process\Process;
+use Webmozart\Assert\Assert;
 
 class Event
 {
@@ -99,8 +100,10 @@ class Event
      */
     public $description;
 
-    public function __construct($command)
+    public function __construct(/* string */ $command)
     {
+        Assert::stringNotEmpty($command);
+
         $this->command = $command;
     }
 
@@ -109,14 +112,14 @@ class Event
      *
      * @return string
      */
-    protected function compileCommand()
+    public function compileCommand()
     {
         $redirect = $this->shouldAppendOutput ? '>>' : '>';
 
         $command = '';
 
         if ($this->mutuallyExclusive) {
-            $command .= '(touch ' . $this->getMutexPath();
+            $command .= '(touch ' . $this->getMutexPath() . '; ';
         }
 
         if ($this->cwd) {
@@ -124,17 +127,17 @@ class Event
         }
 
         if ($this->user) {
-            $command .= 'sudo -u' . $this->user . '; ';
+            $command .= 'sudo -u ' . $this->user . '; ';
         }
 
         $command .= $this->command;
 
         if ($this->mutuallyExclusive) {
-            $command .= 'rm ' . $this->getMutexPath() . ');';
+            $command .= ' ; rm ' . $this->getMutexPath() . ');';
         }
 
         // e.g. 1>> /dev/null 2>> /dev/null
-        $command .= '1' . $redirect . ' ' . $this->output . ' 2' . $redirect . ' ' . $this->errorOutput;
+        $command .= ' 1' . $redirect . ' ' . $this->output . ' 2' . $redirect . ' ' . $this->errorOutput;
 
         return $command;
     }
@@ -302,11 +305,13 @@ class Event
     /**
      * Set which user the command should run as.
      *
-     * @param  string  $user
+     * @param  string?  $user
      * @return $this
      */
-    public function asUser($user)
+    public function asUser(/* string? */ $user)
     {
+        Assert::nullOrString($user);
+
         $this->user = $user;
 
         return $this;
@@ -360,8 +365,10 @@ class Event
      * @param  string $directory
      * @return $this
      */
-    public function in($directory)
+    public function in(/* string */ $directory)
     {
+        Assert::stringNotEmpty($directory);
+
         $this->cwd = $directory;
 
         return $this;
@@ -373,8 +380,10 @@ class Event
      * @param bool $switch
      * @return $this
      */
-    public function appendOutput($switch = true)
+    public function appendOutput(/* boolean */ $switch = true)
     {
+        Assert::boolean($switch);
+
         $this->shouldAppendOutput = $switch;
 
         return $this;
@@ -386,8 +395,10 @@ class Event
      * @param string $output
      * @return $this
      */
-    public function outputTo($output)
+    public function outputTo(/* string */ $output)
     {
+        Assert::stringNotEmpty($output);
+
         $this->output = $output;
 
         return $this;
@@ -399,8 +410,10 @@ class Event
      * @param string $output
      * @return $this
      */
-    public function errorOutputTo($output)
+    public function errorOutputTo(/* string */ $output)
     {
+        Assert::stringNotEmpty($output);
+
         $this->errorOutput = $output;
 
         return $this;
@@ -412,8 +425,10 @@ class Event
      * @param  string  $expression
      * @return $this
      */
-    public function cron($expression)
+    public function cron(/* string */ $expression)
     {
+        Assert::stringNotEmpty($expression);
+
         $this->expression = $expression;
 
         return $this;
@@ -422,7 +437,7 @@ class Event
     /**
      * Change the minute when the job should run (0-59, *, *\/2 etc)
      *
-     * @param  string $minute
+     * @param  string|int $minute
      * @return $this
      */
     public function minute($minute)
@@ -456,15 +471,17 @@ class Event
      * @param  int $n
      * @return $this
      */
-    public function everyNMinutes($n)
+    public function everyNMinutes(/* int */ $n)
     {
+        Assert::integer($n);
+
         return $this->minute("*/{$n}");
     }
 
     /**
      * Set the hour when the job should run (0-23, *, *\/2, etc)
      *
-     * @param  mixed $hour
+     * @param  string|int $hour
      * @return Event
      */
     public function hour($hour)
@@ -502,8 +519,10 @@ class Event
      * @param  string  $time
      * @return $this
      */
-    public function dailyAt($time)
+    public function dailyAt(/* string */ $time)
     {
+        Assert::stringNotEmpty($time);
+
         $segments = explode(':', $time);
 
         return $this->spliceIntoPosition(2, (int) $segments[0])

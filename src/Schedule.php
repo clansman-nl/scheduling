@@ -1,6 +1,7 @@
 <?php
 
 namespace Basebuilder\Scheduling;
+use Webmozart\Assert\Assert;
 
 /**
  * This class will allow you to register commands and retrieve all events that are due for processing
@@ -19,8 +20,10 @@ class Schedule
      * @param  string $command
      * @return Event
      */
-    public function run($command)
+    public function run(/* string */ $command)
     {
+        Assert::stringNotEmpty($command);
+
         $this->events[] = $event = new Event($command);
 
         return $event;
