@@ -195,19 +195,17 @@ class Event
      */
     protected function getMutexPath()
     {
-        return rtrim(sys_get_temp_dir(), '/') . '/scheduled-event-' . md5($this->cwd . $this->command->getName());
+        return rtrim(sys_get_temp_dir(), '/') . '/scheduled-event-' . md5($this->cwd . $this->command);
     }
 
     /**
      * Do not allow the event to overlap each other.
      *
-     * @param  string|int $safe_duration
-     *
      * @return $this
      */
     public function preventOverlapping()
     {
-        $this->preventOverlapping = true;
+        $this->mutuallyExclusive = true;
 
         // Skip the event if it's locked (processing)
         $this->skip(function() {
