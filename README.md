@@ -8,7 +8,16 @@ basebuilder/scheduling can be used for easily performing cron jobs in PHP.
 [![Code Coverage](https://scrutinizer-ci.com/g/clansman-nl/scheduling/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/clansman-nl/scheduling/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/clansman-nl/scheduling/badges/build.png?b=master)](https://scrutinizer-ci.com/g/clansman-nl/scheduling/build-status/master)
 
-## Examples
+## Install
+
+Via Composer
+
+``` bash
+$ composer require basebuilder/scheduling
+```
+
+## Usage
+
 Let's say you create `/var/php/cron.php` with the following contents:
 
 ```PHP
@@ -31,3 +40,25 @@ foreach ($schedule->dueEvents() as $event) {
 
 You can now easily add a single entry to the crontab:
 `* * * * * /path/to/php /var/php/cron.php`
+
+## Testing
+
+``` bash
+$ composer test
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security related issues, please email :author_email instead of using the issue tracker.
+
+## Credits
+
+- [All Contributors][link-contributors]
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
