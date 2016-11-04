@@ -57,7 +57,7 @@ If you discover any security related issues, please email :author_email instead 
 
 ## Credits
 
-- [All Contributors][link-contributors]
+- [All Contributors](../../contributors)
 
 ## License
 
