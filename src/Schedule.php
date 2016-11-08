@@ -15,6 +15,28 @@ class Schedule
     protected $events = [];
 
     /**
+     * @var string|null
+     */
+    protected $name;
+
+    public function __construct(/* string */ $name = null)
+    {
+        Assert::nullOrString($name);
+
+        $this->name = $name;
+    }
+
+    /**
+     * Get the name of this schedule
+     *
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Creates a new Event, adds it to the schedule stack and returns you the instance so you can configure it
      *
      * @param  string $command
@@ -23,10 +45,17 @@ class Schedule
     public function run(/* string */ $command)
     {
         Assert::stringNotEmpty($command);
-
         $this->events[] = $event = new Event($command);
 
         return $event;
+    }
+
+    /**
+     * @return Event[]
+     */
+    public function allEvents()
+    {
+        return $this->events;
     }
 
     /**

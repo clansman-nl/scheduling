@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Closure;
 use Cron\CronExpression;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessUtils;
 use Webmozart\Assert\Assert;
 
 class Event
@@ -108,36 +109,52 @@ class Event
     }
 
     /**
+     * @return string
+     */
+    public function getCommand()
+    {
+        return $this->command;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getCommand();
+    }
+
+    /**
      * Build the command string.
      *
      * @return string
      */
     public function compileCommand()
     {
-        $redirect = $this->shouldAppendOutput ? '>>' : '>';
+        $redirect    = $this->shouldAppendOutput ? '>>' : '>';
+        $output      = ProcessUtils::escapeArgument($this->output);
+        $errorOutput = ProcessUtils::escapeArgument($this->errorOutput);
 
-        $command = '';
+        // e.g. 1>> /dev/null 2>> /dev/null
+        $outputRedirect = ' 1' . $redirect . ' ' . $output . ' 2' . $redirect . ' ' . $errorOutput;
 
-        if ($this->mutuallyExclusive) {
-            $command .= '(touch ' . $this->getMutexPath() . '; ';
-        }
+        $parts = [];
 
         if ($this->cwd) {
-            $command .=  'cd ' . $this->cwd . '; ';
+            $parts[] =  'cd ' . $this->cwd . ';';
         }
 
         if ($this->user) {
-            $command .= 'sudo -u ' . $this->user . '; ';
+            $parts[] = 'sudo -u ' . $this->user . ' --';
         }
 
-        $command .= $this->command;
+        $wrapped = $this->mutuallyExclusive
+            ? '(touch ' . $this->getMutexPath() . '; ' . $this->command . '; rm ' . $this->getMutexPath() . ')' . $outputRedirect
+            : $this->command . $outputRedirect;
 
-        if ($this->mutuallyExclusive) {
-            $command .= ' ; rm ' . $this->getMutexPath() . ');';
-        }
+        $parts[] = "sh -c '{$wrapped}'";
 
-        // e.g. 1>> /dev/null 2>> /dev/null
-        $command .= ' 1' . $redirect . ' ' . $this->output . ' 2' . $redirect . ' ' . $this->errorOutput;
+        $command = implode(' ', $parts);
 
         return $command;
     }
@@ -145,7 +162,7 @@ class Event
     /**
      * Run the given event.
      *
-     * @return void
+     * @return Process
      */
     public function run()
     {
@@ -154,38 +171,42 @@ class Event
         }
 
         if (!$this->runInBackground) {
-            $this->runCommandInForeground();
+            $process = $this->runCommandInForeground();
         } else {
-            $this->runCommandInBackground();
+            $process = $this->runCommandInBackground();
         }
 
         foreach ($this->afterCallbacks as $callback) {
             call_user_func($callback);
         }
+
+        return $process;
     }
 
     /**
      * Run the command in the foreground.
      *
-     * @return void
+     * @return Process
      */
     protected function runCommandInForeground()
     {
-        (new Process(
-            trim($this->compileCommand()), $this->cwd, null, null, null
-        ))->run();
+        $process = new Process($this->compileCommand(), $this->cwd, null, null, null);
+        $process->run();
+
+        return $process;
     }
 
     /**
      * Run the command in the background.
      *
-     * @return void
+     * @return Process
      */
     protected function runCommandInBackground()
     {
-        (new Process(
-            $this->compileCommand() . ' &', $this->cwd, null, null, null
-        ))->run();
+        $process = new Process($this->compileCommand() . ' &', $this->cwd, null, null, null);
+        $process->run();
+
+        return $process;
     }
 
     /**
@@ -209,7 +230,7 @@ class Event
 
         // Skip the event if it's locked (processing)
         $this->skip(function() {
-            return $this->isLocked() === false;
+            return $this->isLocked();
         });
 
         return $this;
@@ -244,7 +265,7 @@ class Event
      * @param  string  $endTime
      * @return $this
      */
-    public function unlessBetween($startTime, $endTime)
+    public function notBetween($startTime, $endTime)
     {
         return $this->skip($this->inTimeInterval($startTime, $endTime));
     }
@@ -338,7 +359,7 @@ class Event
             $date->setTimezone($this->timezone);
         }
 
-        return CronExpression::factory($this->expression)->isDue($date->toDateTimeString());
+        return $this->getCronExpression()->isDue($date->toDateTimeString());
     }
 
     /**
@@ -348,8 +369,14 @@ class Event
      */
     protected function filtersPass()
     {
-        foreach ($this->rejects as $callback) {
+        foreach ($this->filters as $callback) {
             if (!call_user_func($callback)) {
+                return false;
+            }
+        }
+
+        foreach ($this->rejects as $callback) {
+            if (call_user_func($callback)) {
                 return false;
             }
         }
@@ -430,6 +457,14 @@ class Event
         $this->expression = $expression;
 
         return $this;
+    }
+
+    /**
+     * @return CronExpression
+     */
+    public function getCronExpression()
+    {
+        return CronExpression::factory($this->expression);
     }
 
     /**
@@ -732,6 +767,19 @@ class Event
     public function skip(Closure $callback)
     {
         $this->rejects[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Register a callback to be called before the operation.
+     *
+     * @param \Closure $callback
+     * @return $this
+     */
+    public function before(Closure $callback)
+    {
+        $this->beforeCallbacks[] = $callback;
 
         return $this;
     }

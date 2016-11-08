@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4c509b78fa59a7b92e525e997c2a010a",
-    "content-hash": "d281898bc1a8e2b1886019002957d2fb",
+    "hash": "e42cdf6ffac524bb66cbb071b385476c",
+    "content-hash": "473b371ecdfecdea72d5cf0c3a96c2c9",
     "packages": [
         {
             "name": "mtdowling/cron-expression",
@@ -1382,6 +1382,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "~5.5|~7.0"
+    },
     "platform-dev": []
 }
