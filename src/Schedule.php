@@ -37,6 +37,19 @@ class Schedule
     }
 
     /**
+     * Add a single Event to the stack
+     *
+     * @param Event $event
+     * @return $this
+     */
+    public function add(Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
      * Creates a new Event, adds it to the schedule stack and returns you the instance so you can configure it
      *
      * @param  string $command
@@ -45,7 +58,9 @@ class Schedule
     public function run(/* string */ $command)
     {
         Assert::stringNotEmpty($command);
-        $this->events[] = $event = new Event($command);
+        $event = new Event($command);
+
+        $this->add($event);
 
         return $event;
     }
