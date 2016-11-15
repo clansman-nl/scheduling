@@ -203,8 +203,8 @@ class Event
      */
     protected function runCommandInBackground()
     {
-        $process = new Process($this->compileCommand() . ' &', $this->cwd, null, null, null);
-        $process->run();
+        $process = new Process($this->compileCommand(), $this->cwd, null, null, null);
+        $process->start();
 
         return $process;
     }
