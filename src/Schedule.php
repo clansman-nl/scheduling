@@ -1,6 +1,8 @@
 <?php
 
 namespace Basebuilder\Scheduling;
+use Basebuilder\Scheduling\Event\Callback;
+use Basebuilder\Scheduling\Event\Process;
 use Webmozart\Assert\Assert;
 
 /**
@@ -52,16 +54,18 @@ class Schedule
     /**
      * Creates a new Event, adds it to the schedule stack and returns you the instance so you can configure it
      *
-     * @param  string $command
+     * @param  callable|string $event
      * @return Event
      */
-    public function run(/* string */ $command)
+    public function run($event)
     {
-        Assert::stringNotEmpty($command);
-        $event = new Event($command);
+        if(is_callable($event)) {
+            $event = new Callback($event);
+        } else {
+            $event = new Process($event);
+        }
 
         $this->add($event);
-
         return $event;
     }
 
