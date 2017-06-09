@@ -11,7 +11,7 @@ class ScheduleTest extends \PHPUnit_Framework_TestCase
     function it_converts_commands_to_events()
     {
         $schedule = new Schedule();
-        $event = $schedule->run('whoami');
+        $event = $schedule->run(function () {});
 
         $this->assertInstanceOf(Event::class, $event);
     }
@@ -22,7 +22,7 @@ class ScheduleTest extends \PHPUnit_Framework_TestCase
     function it_gets_us_all_events_that_are_due_for_processing()
     {
         $schedule = new Schedule();
-        $event = $schedule->run('whoami')->everyMinute();
+        $event = $schedule->run(function () {})->everyMinute();
 
         $this->assertEquals([$event], $schedule->dueEvents());
     }
