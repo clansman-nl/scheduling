@@ -1,6 +1,7 @@
 <?php
 
 namespace Basebuilder\Scheduling;
+
 use Basebuilder\Scheduling\Event\Callback;
 use Basebuilder\Scheduling\Event\Process;
 use Webmozart\Assert\Assert;
@@ -21,10 +22,9 @@ class Schedule
      */
     protected $name;
 
-    public function __construct(/* string */ $name = null)
+    public function __construct(/* string */ $name = '<anonymous schedule>')
     {
         Assert::nullOrString($name);
-
         $this->name = $name;
     }
 
