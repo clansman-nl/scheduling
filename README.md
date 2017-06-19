@@ -1,5 +1,5 @@
 # basebuilder/scheduling
-basebuilder/scheduling can be used for easily performing cron jobs in PHP.
+basebuilder/scheduling replicates CRON behaviour in PHP.
 
 [![Latest Stable Version](https://poser.pugx.org/basebuilder/scheduling/v/stable)](https://packagist.org/packages/basebuilder/scheduling)
 [![Total Downloads](https://poser.pugx.org/basebuilder/scheduling/downloads)](https://packagist.org/packages/basebuilder/scheduling)
@@ -40,6 +40,15 @@ foreach ($schedule->dueEvents() as $event) {
 
 You can now easily add a single entry to the crontab:
 `* * * * * /path/to/php /var/php/cron.php`
+
+## Other scheduling types
+The `Schedule` can also run a PHP callables:
+
+```PHP
+$schedule
+    ->run(function () { echo "hello world from a function"; })
+    ->daily();
+```
 
 ## Testing
 
