@@ -10,6 +10,11 @@ use Webmozart\Assert\Assert;
 abstract class BaseEvent implements Event
 {
     /**
+     * @var string|null
+     */
+    protected $name;
+
+    /**
      * The cron expression representing the event's frequency.
      * @var string
      */
@@ -49,6 +54,26 @@ abstract class BaseEvent implements Event
      * @var string
      */
     protected $description;
+
+    /**
+     * If you want to run a single event, please give it a name
+     *
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function name($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
 
     /**
      * @param string $description

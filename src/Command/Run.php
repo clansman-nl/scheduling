@@ -2,9 +2,11 @@
 
 namespace Basebuilder\Scheduling\Command;
 
+use Basebuilder\Scheduling\Event;
 use Basebuilder\Scheduling\Event\Process;
 use Basebuilder\Scheduling\Schedule;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -35,7 +37,9 @@ class Run extends Command
      */
     protected function configure()
     {
-        $this->setName('scheduler:run');
+        $this
+            ->setName('scheduler:run')
+            ->addArgument('force', InputArgument::OPTIONAL, 'Force a event to run');
     }
 
     /**
@@ -44,7 +48,23 @@ class Run extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $schedule = $this->schedule;
-        $events   = $schedule->dueEvents();
+
+        $forcedEventName = $input->getArgument('force');
+
+        if ($forcedEventName) {
+            $events = array_filter($schedule->allEvents(), function (Event $event) use ($forcedEventName) {
+                return $event->getName() === $forcedEventName;
+            });
+
+            if (count($events) < 1) {
+                throw new \RuntimeException('No events with that name');
+            }
+
+            $this->runEvent(array_shift($events), $output);
+            exit;
+        }
+
+        $events = $schedule->dueEvents();
 
         if ($output->getVerbosity() >= $this->minimumVerbosity) {
             $output->writeln(
@@ -55,14 +75,19 @@ class Run extends Command
         }
 
         foreach ($events as $event) {
-            if ($output->getVerbosity() >= $this->minimumVerbosity) {
-                $output->writeln('Running event <info>"' . (string)$event . '"</info>');
-            }
+            $this->runEvent($event, $output);
+        }
+    }
 
-            $result = $event->run();
-            if ($event instanceof Process)  {
-                $this->handleProcessOutput($result, $output);
-            }
+    protected function runEvent(Event $event, OutputInterface $output)
+    {
+        if ($output->getVerbosity() >= $this->minimumVerbosity) {
+            $output->writeln('Running event <info>"' . (string) $event . '"</info>');
+        }
+
+        $result = $event->run();
+        if ($event instanceof Process)  {
+            $this->handleProcessOutput($result, $output);
         }
     }
 
