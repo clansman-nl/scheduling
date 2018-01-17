@@ -23,6 +23,14 @@ interface Event
     public function describe($description);
 
     /**
+     * Set a name for the event. Used to just run this event with the scheduler
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function name($name);
+
+    /**
      * Run the given event.
      *
      * @return mixed
