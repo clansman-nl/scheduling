@@ -1,34 +1,32 @@
 {
-  "name": "basebuilder/scheduling",
-  "type": "library",
-  "homepage": "https://github.com/clansman-nl/scheduling",
-  "license": "MIT",
-  "description": "CRON like behaviour with PHP. You can replace many cron jobs with a single entry when using this",
-  "authors": [
-    {
-      "name": "Basebuilder development team",
-      "email": "development@basebuilder.com"
+    "name": "basebuilder/scheduling",
+    "type": "library",
+    "homepage": "https://github.com/clansman-nl/scheduling",
+    "license": "MIT",
+    "description": "CRON like behaviour with PHP. You can replace many cron jobs with a single entry when using this",
+    "authors": [
+        {
+            "name": "Basebuilder development team",
+            "email": "development@basebuilder.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Basebuilder\\Scheduling\\": "src/"
+        }
+    },
+    "require": {
+        "php": "~7.2.10",
+        "nesbot/carbon": "~2.0",
+        "mtdowling/cron-expression": "1.1.0",
+        "symfony/process": "^4.1",
+        "webmozart/assert": "~1.3",
+        "symfony/console": "^4.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.3"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Basebuilder\\Scheduling\\": "src/"
-    }
-  },
-  "require": {
-    "php"                       : "~5.5|~7.0",
-    "nesbot/carbon"             : "1.21.*",
-    "mtdowling/cron-expression" : "1.1.*",
-    "symfony/process"           : "3.*",
-    "webmozart/assert"          : "^1.3"
-  },
-  "suggest": {
-    "symfony/console" : "When you want to use the console commands"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~4.5"
-  },
-  "scripts": {
-    "test": "phpunit"
-  }
 }

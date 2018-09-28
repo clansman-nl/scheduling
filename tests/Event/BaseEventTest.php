@@ -1,21 +1,25 @@
 <?php
 
 use Basebuilder\Scheduling\Event\BaseEvent;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class BaseEventTest extends \PHPUnit_Framework_TestCase
+class BaseEventTest extends TestCase
 {
     /**
-     * @return BaseEvent|\PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|BaseEvent
+     * @throws ReflectionException
      */
-    protected function getEvent()
+    protected function getEvent(): BaseEvent
     {
-        return $this->getMockBuilder(BaseEvent::class)->getMockForAbstractClass();
+        return $this->getMockForAbstractClass(BaseEvent::class);
     }
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_every_minute()
+    public function it_can_run_every_minute(): void
     {
         $event = $this->getEvent();
 
@@ -26,8 +30,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_n_minutes()
+    public function it_can_run_n_minutes(): void
     {
         $event = $this->getEvent();
         $event->everyNMinutes(5);
@@ -37,8 +42,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_hourly()
+    public function it_can_run_hourly(): void
     {
         $event = $this->getEvent();
         $event->hourly();
@@ -48,8 +54,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_on_every_hour()
+    public function it_can_run_on_every_hour(): void
     {
         $event = $this->getEvent();
         $event->hour(1);
@@ -59,8 +66,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_daily()
+    public function it_can_run_daily(): void
     {
         $event = $this->getEvent();
         $event->daily();
@@ -70,8 +78,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_daily_at_a_specific_time()
+    public function it_can_run_daily_at_a_specific_time(): void
     {
         $event = $this->getEvent();
         $event->dailyAt('10:05');
@@ -83,8 +92,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_on_specific_days()
+    public function it_can_run_on_specific_days(): void
     {
         $event = $this->getEvent();
 
@@ -119,8 +129,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_monthly()
+    public function it_can_run_monthly(): void
     {
         $event = $this->getEvent();
         $event->monthly();
@@ -130,8 +141,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_quarterly()
+    public function it_can_run_quarterly(): void
     {
         $event = $this->getEvent();
         $event->quarterly();
@@ -141,8 +153,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_can_run_yearly()
+    public function it_can_run_yearly(): void
     {
         $event = $this->getEvent();
         $event->yearly();
@@ -152,8 +165,9 @@ class BaseEventTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     * @throws ReflectionException
      */
-    function it_allows_for_filtering()
+    public function it_allows_for_filtering(): void
     {
         $event = $this->getEvent();
         $event->everyMinute();

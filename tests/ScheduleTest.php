@@ -2,13 +2,14 @@
 
 use Basebuilder\Scheduling\Event;
 use Basebuilder\Scheduling\Schedule;
+use PHPUnit\Framework\TestCase;
 
-class ScheduleTest extends \PHPUnit_Framework_TestCase
+class ScheduleTest extends TestCase
 {
     /**
      * @test
      */
-    function it_converts_commands_to_events()
+    public function it_converts_commands_to_events(): void
     {
         $schedule = new Schedule();
         $event = $schedule->run(function () {});
@@ -19,7 +20,7 @@ class ScheduleTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function it_gets_us_all_events_that_are_due_for_processing()
+    public function it_gets_us_all_events_that_are_due_for_processing(): void
     {
         $schedule = new Schedule();
         $event = $schedule->run(function () {})->everyMinute();

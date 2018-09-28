@@ -87,8 +87,8 @@ class Process extends BaseEvent
     public function compileCommand()
     {
         $redirect    = $this->shouldAppendOutput ? '>>' : '>';
-        $output      = ProcessUtils::escapeArgument($this->output);
-        $errorOutput = ProcessUtils::escapeArgument($this->errorOutput);
+        $output      = $this->output;
+        $errorOutput = $this->errorOutput;
 
         // e.g. 1>> /dev/null 2>> /dev/null
         $outputRedirect = ' 1' . $redirect . ' ' . $output . ' 2' . $redirect . ' ' . $errorOutput;
